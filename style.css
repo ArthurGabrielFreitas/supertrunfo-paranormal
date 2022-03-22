@@ -21,14 +21,43 @@ body {
 
 button,
 .button-jogar {
-  padding: 0.8rem 1.5rem;
+  padding: 0.8rem 1rem;
   margin: 1rem 0;
   border-radius: 5px;
   border: none;
   font-size: 1rem;
+  max-height: 45px;
+}
+
+#idJogador{
+  display: flex;
+  align-self: flex-start;
+  padding-left: 35px;
+}
+
+#idMaquina{
+  display: flex;
+  align-self: flex-end;
+  padding-right: 35px;
+}
+
+#qtdCartasJogador{
+  display: flex;
+  align-self: flex-start;
+  padding-left: 35px;
+}
+
+#qtdCartasMaquina{
+  display: flex;
+  align-self: flex-end;
+  padding-right: 35px;
 }
 
 h2 {
+  color: white;
+}
+
+h3 {
   color: white;
 }
 
@@ -104,6 +133,10 @@ form {
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.wrapper h2, h3{
+  margin-top: -8px;
 }
 
 .carta-subtitle {

@@ -68,56 +68,104 @@ var cartas = [
   }
 ];
 
-var cartaJogador;
-var cartaMaquina;
+// TODO Continuar Caso de a máquina escolher o atributo. Deve alterar os atributos do jogador de radio para lista
+// Verificar erro em empate
+
+var cartasJogador = []
+var cartasMaquina = []
+
+var jogadorEscolheAtributo = true;
+
+document.getElementById("btnSortear").disabled = false;
+document.getElementById("btnJogar").disabled = true;
+document.getElementById("btnProxima").disabled = true;
+
+function distribuirCartas() {
+  var cartasRecebidas = [];
+  var cartasNoMonte = cartas.length;
+  while ( cartasNoMonte > cartas.length / 2) {
+    var cartaNova = cartas[parseInt(Math.random() * cartas.length)];
+    if (!cartasRecebidas.includes(cartaNova)) {
+      cartasRecebidas.push(cartaNova);
+      cartasNoMonte--;
+    }
+  }
+  return cartasRecebidas;
+}
+
+function cartasRestantes() {
+  var cartasRecebidasMaquina = [];
+  for (var carta in cartas) {
+    if (!cartasJogador.includes(cartas[carta])) {
+      cartasRecebidasMaquina.push(cartas[carta]);
+    }
+  }
+  return cartasRecebidasMaquina;
+}
 
 function sortearCarta() {
-  var carta1 = parseInt(Math.random() * 6);
-  var carta2 = parseInt(Math.random() * 6);
 
-  while (carta1 == carta2) {
-    carta2 = parseInt(Math.random() * 4);
-  }
+  cartasJogador = distribuirCartas();
+  cartasMaquina = cartasRestantes();
 
-  cartaJogador = cartas[carta1];
-  cartaMaquina = cartas[carta2];
-
-  console.log(cartaJogador)
+  document.getElementById("qtdCartasJogador").innerHTML = cartasJogador.length + " Cartas";
+  document.getElementById("qtdCartasMaquina").innerHTML = cartasMaquina.length + " Cartas";
 
   document.getElementById("btnSortear").disabled = true;
   document.getElementById("btnJogar").disabled = false;
+  document.getElementById("btnProxima").disabled = true;
 
-  // exibirOpcoes();
   exibirCartaJogador();
 }
 
-// function exibirOpcoes() {
-//   var opcoes = document.getElementById("opcoes");
-//   var opcoesTexto = "";
-
-//   for (var atributo in cartaJogador.atributos) {
-//     opcoesTexto +=
-//       "<input type='radio' name='atributo' value=" + atributo + ">" + atributo;
-//   }
-//   opcoes.innerHTML = opcoesTexto;
-// }
-
 function obtemAtributo() {
-  var radioAtributos = document.getElementsByName("atributo");
-  for (var i = 0; i < radioAtributos.length; i++) {
-    if (radioAtributos[i].checked) {
-      return radioAtributos[i].value;
+  if(jogadorEscolheAtributo){
+    var radioAtributos = document.getElementsByName("atributo");
+    for (var i = 0; i < radioAtributos.length; i++) {
+      if (radioAtributos[i].checked) {
+        return radioAtributos[i].value;
+      }
     }
+    return false;
+  } else {
+    var vetorAux = []
+
+    // Array com os objetos dos atributos da primeira carta do monte da Máquina.
+    var atributos = cartasMaquina[0].atributos
+
+    // O resultado é um array com os valores dos atributos.
+    for(var atrib in atributos){
+      vetorAux.push(atributos[atrib]);
+    }
+    console.log(vetorAux)
+
+    // O maior valor encontrado no array dos valores dos atributos.
+    max = Math.max.apply(null, vetorAux);
+    var indicesValorMaximo = [];
+    var idx = vetorAux.indexOf(max)
+
+    // O resultado é um array com todas as posições do valor máximo no array de valores. Necessário caso tenha mais de uma ocorrência do mesmo valor
+    while (idx != -1){
+      indicesValorMaximo.push(idx);
+      idx = vetorAux.indexOf(max, idx+1)
+    }
+    console.log(indicesValorMaximo)
+
+    // Escolhe um elemento aleatório dentro do array dos índices dos atributos de maior valor e retorna esse índice.
+    var indiceRetornado = indicesValorMaximo[parseInt(Math.random() * indicesValorMaximo.length)]
+    console.log(indicesValorMaximo.length)
+    console.log(indiceRetornado)
+    console.log(atributos[indiceRetornado])
+    return indiceRetornado;
   }
-  return false;
 }
 
 function jogar() {
   var atributoSelecionado = obtemAtributo();
 
   if (atributoSelecionado) {
-    var valorCartaJogador = cartaJogador.atributos[atributoSelecionado];
-    var valorCartaMaquina = cartaMaquina.atributos[atributoSelecionado];
+    var valorCartaJogador = cartasJogador[0].atributos[atributoSelecionado];
+    var valorCartaMaquina = cartasMaquina[0].atributos[atributoSelecionado];
 
     var elementoResultado = document.getElementById("resultado");
     var htmlResultado;
@@ -125,25 +173,44 @@ function jogar() {
     if (valorCartaJogador > valorCartaMaquina) {
       htmlResultado =
         "<p class='resultado-final'>Meus parabéns, você venceu... Dessa vez</p>";
+      cartasJogador.push(cartasMaquina.shift());
+      cartasJogador.push(cartasJogador.shift());
+      exibirCartaMaquina();
+      jogadorEscolheAtributo = true;
     } else if (valorCartaJogador < valorCartaMaquina) {
       htmlResultado =
         "<p class='resultado-final'>Me parece que a sorte não está ao seu favor. Últimas palavras?</p>";
+        cartasMaquina.push(cartasJogador.shift());
+        cartasMaquina.push(cartasMaquina.shift());
+        exibirCartaMaquina();
+        jogadorEscolheAtributo = false;
     } else {
       htmlResultado =
         "<p class='resultado-final'>Que jogo sem graça! De novo! De novo!!!</p>";
     }
     elementoResultado.innerHTML = htmlResultado;
-    document.getElementById("btnSortear").disabled = false;
+
+    document.getElementById("qtdCartasJogador").innerHTML = cartasJogador.length + " Cartas";
+    document.getElementById("qtdCartasMaquina").innerHTML = cartasMaquina.length + " Cartas";
+
     document.getElementById("btnJogar").disabled = true;
-    exibirCartaMaquina();
+    document.getElementById("btnProxima").disabled = false;
   } else {
     console.error("Selecione um atributo antes de jogar!");
   }
 }
 
+function avancarRodada(){
+  document.getElementById("btnJogar").disabled = false;
+  document.getElementById("btnProxima").disabled = true;
+
+  exibirCartaJogador();
+  resetarCartaMaquina();
+}
+
 function exibirCartaJogador() {
   var divCartaJogador = document.getElementById("carta-jogador");
-  divCartaJogador.style.backgroundImage = `url(${cartaJogador.imagem})`;
+  divCartaJogador.style.backgroundImage = `url(${cartasJogador[0].imagem})`;
   var moldura =
     '<img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent-ajustado.png" style=" width: inherit; height: inherit; position: absolute;">';
 
@@ -151,25 +218,25 @@ function exibirCartaJogador() {
 
   var opcoesTexto = "";
 
-  for (var atributo in cartaJogador.atributos) {
+  for (var atributo in cartasJogador[0].atributos) {
     opcoesTexto +=
       "<input type='radio' name='atributo' value=" +
       atributo +
       ">" +
       atributo +
       " " +
-      cartaJogador.atributos[atributo] +
+      cartasJogador[0].atributos[atributo] +
       "<br>";
   }
 
-  var nome = `<p class="carta-subtitle">${cartaJogador.nome}</p>`;
+  var nome = `<p class="carta-subtitle">${cartasJogador[0].nome}</p>`;
 
   divCartaJogador.innerHTML = moldura + nome + tagHTML + opcoesTexto + "</div>";
 }
 
 function exibirCartaMaquina() {
   var divCartaMaquina = document.getElementById("carta-maquina");
-  divCartaMaquina.style.backgroundImage = `url(${cartaMaquina.imagem})`;
+  divCartaMaquina.style.backgroundImage = `url(${cartasMaquina[0].imagem})`;
   var moldura =
     '<img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent-ajustado.png" style=" width: inherit; height: inherit; position: absolute; top: 0px;">';
 
@@ -177,18 +244,33 @@ function exibirCartaMaquina() {
 
   var opcoesTexto = "";
 
-  for (var atributo in cartaMaquina.atributos) {
+  for (var atributo in cartasMaquina[0].atributos) {
     opcoesTexto +=
       "<p name='atributo' value=" +
       atributo +
       ">" +
       atributo +
       " " +
-      cartaMaquina.atributos[atributo] +
+      cartasMaquina[0].atributos[atributo] +
       "</p>";
   }
 
-  var nome = `<p class="carta-subtitle">${cartaMaquina.nome}</p>`;
+  var nome = `<p class="carta-subtitle">${cartasMaquina[0].nome}</p>`;
 
   divCartaMaquina.innerHTML = moldura + nome + tagHTML + opcoesTexto + "</div>";
 }
+
+function resetarCartaMaquina(){
+  var divCartaMaquina = document.getElementById("carta-maquina");
+  divCartaMaquina.style.backgroundImage = `url()`;
+  var moldura =
+  '<img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent-ajustado.png" style=" width: inherit; height: inherit; position: absolute; top: 0px;">';
+
+  divCartaMaquina.innerHTML = moldura;
+}
+
+// função sorteia metade das cartas para o jogador e o computador fica com as outras
+// O jogador começa escolhendo o atributo. Quem ganhar fica com as cartas do oponente e escolhe o próximo atributo.
+// Se o computador ganhar, ele deve escolher o atributo de maior valor. O jogador apenas clica no botão de jogar.
+// Quem ficar com todas as cartas ganha.
+// Após a rodada, a carta da máquina fica em branco e o jogador recebe uma nova carta

@@ -23,20 +23,30 @@
     <h2>Serei seu Anfitrião. Apenas os melhores seguirão o jogo. Boa sorte...</h2>
     <button onclick="sortearCarta()" id="btnSortear">Sortear cartas</button>
     <form id="form">
-      <h2>Escolha o seu atributo</h2>
+      <div class="wrapper">
+        <h2 id="idJogador">Jogador</h2>
+        <h2 id="idMaquina">Máquina</h2>
+      </div>
+      <div class="wrapper">
+        <h3 id="qtdCartasJogador">Quantidade de cartas</h3>
+        <h3 id="qtdCartasMaquina">Quantidade de cartas</h3>
+      </div>
       <div class="wrapper">
         <div>
           <div id="carta-jogador">
             <img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent-ajustado.png" style=" width: inherit; height: inherit; position: absolute; position-y: 10px;">
-            <h3></h3>
           </div>
+        </div>
+        <div>
+          <h2 id="atrbt">Escolha o seu atributo</h2>
+          <button class="button-jogar" type="button" id="btnJogar" onclick="jogar()" disabled="true">Jogar</button>
+          <button class="button-proxima" type="button" id="btnProxima" onclick="avancarRodada()" disabled="true">Próxima rodada</button>
+          <div id="resultado"></div>
         </div>
         <div>
           <div id="carta-maquina" id="cartas"><img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent-ajustado.png" style=" width: inherit; height: inherit; position: absolute;"></div>
         </div>
       </div>
-      <button class="button-jogar" type="button" id="btnJogar" onclick="jogar()" disabled="false">Jogar</button>
-      <div id="resultado"></div>
     </form>
   </div>
 </body>
