@@ -125,10 +125,6 @@ h3 {
   background-color: black;
 }
 
-.--spacing {
-  margin-left: 2.5rem;
-}
-
 form {
   display: flex;
   flex-direction: column;
