@@ -29,25 +29,30 @@ button,
   max-height: 45px;
 }
 
-#idJogador{
+#idJogador {
   display: flex;
   align-self: flex-start;
   padding-left: 35px;
 }
 
-#idMaquina{
+#idMaquina {
   display: flex;
   align-self: flex-end;
   padding-right: 35px;
 }
 
-#qtdCartasJogador{
+#qtdCartasJogador {
   display: flex;
   align-self: flex-start;
   padding-left: 35px;
 }
 
-#qtdCartasMaquina{
+#rodada {
+  display: flex;
+  align-self: center;
+}
+
+#qtdCartasMaquina {
   display: flex;
   align-self: flex-end;
   padding-right: 35px;
@@ -135,7 +140,8 @@ form {
   width: 100%;
 }
 
-.wrapper h2, h3{
+.wrapper h2,
+h3 {
   margin-top: -8px;
 }
 
