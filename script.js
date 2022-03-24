@@ -86,6 +86,9 @@ function sortearCartas() {
   rodada = 1;
 
   resetarCartaMaquina();
+
+  document.getElementById("atrbt").innerHTML = "Escolha seu atributo";
+
   document.getElementById("resultado").innerHTML = "";
 
   document.getElementById("qtdCartasJogador").innerHTML =
@@ -117,7 +120,8 @@ function jogar() {
     var htmlResultado;
 
     if (valorCartaJogador > valorCartaMaquina) {
-      exibirCartaMaquina();
+      exibirCartaJogador(atributoSelecionado);
+      exibirCartaMaquina(atributoSelecionado);
       cartasJogador.push(cartasMaquina.shift());
       cartasJogador.push(cartasJogador.shift());
       console.log(cartasMaquina.length);
@@ -126,7 +130,8 @@ function jogar() {
       jogadorEscolheAtributo = true;
       atributosJaEscolhidosMaquina = [];
     } else if (valorCartaJogador < valorCartaMaquina) {
-      exibirCartaMaquina();
+      exibirCartaJogador(atributoSelecionado);
+      exibirCartaMaquina(atributoSelecionado);
       cartasMaquina.push(cartasJogador.shift());
       cartasMaquina.push(cartasMaquina.shift());
       htmlResultado =
@@ -134,6 +139,7 @@ function jogar() {
       jogadorEscolheAtributo = false;
       atributosJaEscolhidosMaquina = [];
     } else {
+      exibirCartaJogador(atributoSelecionado);
       htmlResultado =
         "<p class='resultado-final'>Que jogo sem graça! De novo! De novo!!!</p>";
     }
@@ -258,7 +264,7 @@ function obtemAtributo() {
   }
 }
 
-function exibirCartaJogador() {
+function exibirCartaJogador(atributoSelecionado = null) {
   var divCartaJogador = document.getElementById("carta-jogador");
   divCartaJogador.style.backgroundImage = `url(${cartasJogador[0].imagem})`;
   var moldura =
@@ -270,8 +276,8 @@ function exibirCartaJogador() {
 
   if (jogadorEscolheAtributo) {
     for (var atributo in cartasJogador[0].atributos) {
+      opcoesTexto += "<input type='radio' name='atributo' value=";
       opcoesTexto +=
-        "<input type='radio' name='atributo' value=" +
         atributo +
         ">" +
         atributo +
@@ -281,8 +287,12 @@ function exibirCartaJogador() {
     }
   } else {
     for (var atributo in cartasJogador[0].atributos) {
+      if (atributo == atributoSelecionado) {
+        opcoesTexto += "<p name='atributo' style='font-weight: bold;' value=";
+      } else {
+        opcoesTexto += "<p name='atributo' value=";
+      }
       opcoesTexto +=
-        "<p name='atributo' value=" +
         atributo +
         ">" +
         atributo +
@@ -297,7 +307,7 @@ function exibirCartaJogador() {
   divCartaJogador.innerHTML = moldura + nome + tagHTML + opcoesTexto + "</div>";
 }
 
-function exibirCartaMaquina() {
+function exibirCartaMaquina(atributoSelecionado = null) {
   var divCartaMaquina = document.getElementById("carta-maquina");
   divCartaMaquina.style.backgroundImage = `url(${cartasMaquina[0].imagem})`;
   var moldura =
@@ -308,8 +318,12 @@ function exibirCartaMaquina() {
   var opcoesTexto = "";
 
   for (var atributo in cartasMaquina[0].atributos) {
+    if (atributo == atributoSelecionado) {
+      opcoesTexto += "<p name='atributo' style='font-weight: bold;' value=";
+    } else {
+      opcoesTexto += "<p name='atributo' value=";
+    }
     opcoesTexto +=
-      "<p name='atributo' value=" +
       atributo +
       ">" +
       atributo +
@@ -340,8 +354,6 @@ function fimDeJogo() {
   document.getElementById("btnJogar").disabled = true;
   document.getElementById("btnProxima").disabled = true;
 
-  console.log("chegou aqui");
-
   var elementoResultado = document.getElementById("resultado");
   var htmlResultado;
   if (cartasMaquina.length == 0) {
@@ -351,6 +363,5 @@ function fimDeJogo() {
     htmlResultado =
       "<p class='resultado-final'>Me parece que a sorte não está ao seu favor. Últimas palavras?</p>";
   }
-  console.log(htmlResultado);
   elementoResultado.innerHTML = htmlResultado;
 }
