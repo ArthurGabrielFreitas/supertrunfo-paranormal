@@ -1,7 +1,7 @@
 var cartas = [
   {
     nome: "Mauro Nunes",
-    imagem: "images/Miniatura-Mauro-Nunes.png",
+    imagem: "images/Miniatura-Espinhos-Mauro-Nunes.png",
     atributos: {
       agilidade: 0,
       forca: 2,
@@ -12,7 +12,7 @@ var cartas = [
   },
   {
     nome: "Maya Shizuri",
-    imagem: "images/Miniatura-Maya-Shuzuri.png",
+    imagem: "images/Miniatura-Espinhos-Maya-Shuzuri.png",
     atributos: {
       agilidade: 2,
       forca: 1,
@@ -23,7 +23,7 @@ var cartas = [
   },
   {
     nome: "Bruna Sampaio",
-    imagem: "images/Miniatura-Bruna-Sampaio.png",
+    imagem: "images/Miniatura-Espinhos-Bruna-Sampaio.png",
     atributos: {
       agilidade: 0,
       forca: 0,
@@ -34,7 +34,7 @@ var cartas = [
   },
   {
     nome: "Leandro Weiss",
-    imagem: "images/Miniatura-Leandro-Weiss.png",
+    imagem: "images/Miniatura-Espinhos-Leandro-Weiss.png",
     atributos: {
       agilidade: 0,
       forca: 1,
@@ -45,7 +45,7 @@ var cartas = [
   },
   {
     nome: "Jaime Orthuga",
-    imagem: "images/Miniatura-Jaime-Orthuga.png",
+    imagem: "images/Miniatura-Espinhos-Jaime-Orthuga.png",
     atributos: {
       agilidade: 0,
       forca: 0,
@@ -56,7 +56,7 @@ var cartas = [
   },
   {
     nome: "Aniela Ukryty",
-    imagem: "images/Miniatura-Aniela-Ukryty.png",
+    imagem: "images/Miniatura-Espinhos-Aniela-Ukryty.png",
     atributos: {
       agilidade: 0,
       forca: -1,
@@ -64,7 +64,62 @@ var cartas = [
       presenca: 3,
       vigor: 0
     }
-  }
+  },
+  {
+    nome: "Arthur Cervero",
+    imagem: "images/Miniatura-Calamidade-Arthur-Cervero.png",
+    atributos: {
+      agilidade: 3,
+      forca: 1,
+      inteligencia: 1,
+      presenca: 0,
+      vigor: 1
+    }
+  },
+  {
+    nome: 'Antônio "Balu" Pontevedra',
+    imagem: "images/Miniatura-Calamidade-Antonio-Pontevedra.png",
+    atributos: {
+      agilidade: 0,
+      forca: 3,
+      inteligencia: 0,
+      presenca: 0,
+      vigor: 2
+    }
+  },
+  {
+    nome: "Carine Leone",
+    imagem: "images/Miniatura-Calamidade-Carina-Leone.png",
+    atributos: {
+      agilidade: 2,
+      forca: 0,
+      inteligencia: 1,
+      presenca: 1,
+      vigor: 1
+    }
+  },
+  {
+    nome: "Dante",
+    imagem: "images/Miniatura-Calamidade-Dante.png",
+    atributos: {
+      agilidade: 0,
+      forca: 0,
+      inteligencia: 3,
+      presenca: 3,
+      vigor: 0
+    }
+  },
+  {
+    nome: "Rubens Naluti",
+    imagem: "images/Miniatura-Calamidade-Rubens-Naluti.png",
+    atributos: {
+      agilidade: 2,
+      forca: 0,
+      inteligencia: 3,
+      presenca: 0,
+      vigor: 1
+    }
+  },
 ];
 
 var cartasJogador = [];
@@ -120,11 +175,12 @@ function jogar() {
     var htmlResultado;
 
     if (valorCartaJogador > valorCartaMaquina) {
-      exibirCartaJogador(atributoSelecionado);
+      if(!jogadorEscolheAtributo){
+        exibirCartaJogador(atributoSelecionado);
+      }
       exibirCartaMaquina(atributoSelecionado);
       cartasJogador.push(cartasMaquina.shift());
       cartasJogador.push(cartasJogador.shift());
-      console.log(cartasMaquina.length);
       htmlResultado =
         "<p class='resultado-final'>Meus parabéns, você venceu... Essa rodada</p>";
       jogadorEscolheAtributo = true;
@@ -188,7 +244,7 @@ function avancarRodada() {
 function distribuirCartas() {
   var cartasRecebidas = [];
   var cartasNoMonte = cartas.length;
-  while (cartasNoMonte > cartas.length / 2) {
+  while (cartasNoMonte > Math.ceil(cartas.length / 2)) {
     var cartaNova = cartas[parseInt(Math.random() * cartas.length)];
     if (!cartasRecebidas.includes(cartaNova)) {
       cartasRecebidas.push(cartaNova);
@@ -200,10 +256,17 @@ function distribuirCartas() {
 
 // Distribui as cartas restantes para a Máquina.
 function cartasRestantes() {
+  var cartasNaoDistribuidas = [];
   var cartasRecebidasMaquina = [];
   for (var carta in cartas) {
     if (!cartasJogador.includes(cartas[carta])) {
-      cartasRecebidasMaquina.push(cartas[carta]);
+      cartasNaoDistribuidas.push(cartas[carta]);
+    }
+  }
+  while (cartasRecebidasMaquina.length < Math.floor(cartas.length / 2)) {
+    var cartaNovaMaquina = cartasNaoDistribuidas[parseInt(Math.random() * cartasNaoDistribuidas.length)];
+    if (!cartasRecebidasMaquina.includes(cartaNovaMaquina)) {
+      cartasRecebidasMaquina.push(cartaNovaMaquina);
     }
   }
   return cartasRecebidasMaquina;
